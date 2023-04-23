@@ -1,0 +1,79 @@
+--1
+create or replace PROCEDURE group_by
+IS
+BEGIN
+  FOR rec IN (SELECT category_name, count(product_id) count_products
+              FROM product
+              GROUP BY category_name)
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(rec.category_name || ' number of products: ' || rec.count_products);
+  END LOOP;
+END;
+
+
+begin
+group_by();
+end;
+
+--2
+create or replace FUNCTION count_records(table_name IN VARCHAR2)
+RETURN NUMBER
+IS
+  num NUMBER;
+BEGIN
+  EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || table_name INTO num;
+  RETURN num;
+END;
+
+DECLARE
+  total_records NUMBER;
+BEGIN
+  total_records := count_records('orders');
+  DBMS_OUTPUT.PUT_LINE('The total number of records in the employees table is: ' || total_records);
+END;
+
+--3
+create or replace PROCEDURE update_cost(category IN varchar2, new_cost IN NUMBER) IS
+BEGIN
+  UPDATE product SET cost = new_cost WHERE category_name = category;
+  DBMS_OUTPUT.PUT_LINE('Number of rows updated: ' || SQL%ROWCOUNT);
+END;
+
+begin
+update_cost('Clothes', 2000);
+end;
+
+--4
+DECLARE
+  product_name VARCHAR2(50);
+  num_of_products number;
+  cost number;
+  category_name varchar2(50);
+  ex EXCEPTION;
+BEGIN
+    num_of_products:= count_records('product');
+    product_name:= :product_name;
+    cost:= :cost;
+    category_name:= :category_name;
+    IF LENGTH(product_name) < 5 THEN
+        RAISE ex;
+    ELSE
+        INSERT INTO product (product_id, product_name,cost,category_name) VALUES (num_of_products+1,product_name,cost,category_name);
+        DBMS_OUTPUT.PUT_LINE('Item inserted successfully.');
+    END IF;
+    EXCEPTION
+    WHEN ex THEN
+    DBMS_OUTPUT.PUT_LINE('Product name should be at least 5 characters long.');
+END;
+
+--5
+CREATE OR REPLACE TRIGGER count_rows
+BEFORE INSERT ON product
+DECLARE
+  num_rows INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO num_rows FROM product;
+  DBMS_OUTPUT.PUT_LINE('Current number of rows: ' || num_rows);
+END; 
+
+insert into product values(16,999999,'AlishPidor', 'Pet Products');
