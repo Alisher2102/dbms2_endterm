@@ -2,11 +2,11 @@
 create or replace PROCEDURE group_by
 IS
 BEGIN
-  FOR rec IN (SELECT category_name, count(product_id) count_products
+  FOR i IN (SELECT category_name, count(product_id) count_products
               FROM product
               GROUP BY category_name)
   LOOP
-    DBMS_OUTPUT.PUT_LINE(rec.category_name || ' number of products: ' || rec.count_products);
+    DBMS_OUTPUT.PUT_LINE(i.category_name || ' number of products: ' || i.count_products);
   END LOOP;
 END;
 
