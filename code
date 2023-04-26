@@ -30,6 +30,7 @@ DECLARE
   total_records NUMBER;
 BEGIN
   total_records := count_records('orders');
+  DBMS_OUTPUT.PUT_LINE('Number of rows in orders table: '||total_records);
 END;
 
 --3
