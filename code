@@ -77,4 +77,4 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Current number of rows: ' || num_rows);
 END; 
 
-insert into product values(18,100000,'Zara shoes', 21);
+insert into product values(19,100000,'Zara shoes', 21);
