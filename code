@@ -30,7 +30,6 @@ DECLARE
   total_records NUMBER;
 BEGIN
   total_records := count_records('orders');
-  DBMS_OUTPUT.PUT_LINE('The total number of records in the employees table is: ' || total_records);
 END;
 
 --3
