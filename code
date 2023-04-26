@@ -2,11 +2,12 @@
 create or replace PROCEDURE group_by
 IS
 BEGIN
-  FOR i IN (SELECT category_name, count(product_id) count_products
+  FOR rec IN (SELECT seller_id, count(*) as count_products
               FROM product
-              GROUP BY category_name)
+              GROUP BY seller_id
+              order by seller_id asc)
   LOOP
-    DBMS_OUTPUT.PUT_LINE(i.category_name || ' number of products: ' || i.count_products);
+    DBMS_OUTPUT.PUT_LINE(rec.seller_id || ' seller''s number of products: ' || rec.count_products);
   END LOOP;
 END;
 
@@ -33,14 +34,14 @@ BEGIN
 END;
 
 --3
-create or replace PROCEDURE update_cost(category IN varchar2, new_cost IN NUMBER) IS
+create or replace PROCEDURE update_cost(product_name1 IN varchar2, new_cost IN NUMBER) IS
 BEGIN
-  UPDATE product SET cost = new_cost WHERE category_name = category;
+  UPDATE product SET cost = new_cost WHERE product_name = product_name1;
   DBMS_OUTPUT.PUT_LINE('Number of rows updated: ' || SQL%ROWCOUNT);
 END;
 
 begin
-update_cost('Clothes', 2000);
+update_cost('Black T-shirt', 5000);
 end;
 
 --4
@@ -48,17 +49,17 @@ DECLARE
   product_name VARCHAR2(50);
   num_of_products number;
   cost number;
-  category_name varchar2(50);
+  seller_ID number;
   ex EXCEPTION;
 BEGIN
     num_of_products:= count_records('product');
     product_name:= :product_name;
     cost:= :cost;
-    category_name:= :category_name;
+    seller_id:= :seller_id;
     IF LENGTH(product_name) < 5 THEN
         RAISE ex;
     ELSE
-        INSERT INTO product (product_id, product_name,cost,category_name) VALUES (num_of_products+1,product_name,cost,category_name);
+        INSERT INTO product (product_id, product_name,cost,seller_id) VALUES (num_of_products+1,product_name,cost,seller_ID);
         DBMS_OUTPUT.PUT_LINE('Item inserted successfully.');
     END IF;
     EXCEPTION
@@ -76,4 +77,4 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Current number of rows: ' || num_rows);
 END; 
 
-insert into product values(16,999999,'Bone Toy', 'Pet Products');
+insert into product values(18,999999,'Chandelier', 21);
